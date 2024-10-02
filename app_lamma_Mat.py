@@ -29,7 +29,7 @@ def gerar_pdf(dados, grafico_path, pmi_medio, pmi_medio_cor, cultivar_selecionad
     c.setFont("Helvetica-Bold", 14)
     c.drawCentredString(A4[0] / 2, 780, f"Data da Exportação: {datetime.now().strftime('%Y-%m-%d')}")
 
-    c.setFont("Helvetica", 12)
+    c.setFont("Helvetica", 10)
     y = 740  # Ajustando o ponto inicial para texto das amostras
 
     # Adicionando as amostras em uma única coluna, incluindo o nome da cultivar
