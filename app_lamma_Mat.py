@@ -175,12 +175,12 @@ if len(cultivares) == 1:  # Permite selecionar até 10 amostras quando uma culti
                 else:
                     st.info(f"Recomendação para a Amostra {i+1}: Ainda não é o momento ideal para a colheita.")
 
-                # Visualização dos Dados para cada Amostra com fundo cinza
-                fig, ax = plt.subplots(facecolor='lightgray')
+                # Visualização dos Dados para cada Amostra com fundo cinza apenas dentro do gráfico
+                fig, ax = plt.subplots()
+                ax.set_facecolor('lightgray')  # Apenas a parte interna do gráfico com fundo cinza
                 cores = ['Branca', 'Amarelo 1', 'Amarelo 2', 'Laranja', 'Marrom', 'Preto']
                 quantidades = [amostra['white'], amostra['yellow1'], amostra['yellow2'], amostra['orange'], amostra['brown'], amostra['black']]
                 bars = ax.bar(cores, quantidades, color=['white', 'yellow', 'yellow', 'orange', 'brown', 'black'])
-                ax.set_facecolor('lightgray')  # Fundo cinza dentro do gráfico
                 ax.set_ylabel('Quantidade de Vagens')
                 ax.set_title(f'Distribuição de Vagens por Cor - Amostra {i+1}')
 
@@ -205,10 +205,10 @@ if len(cultivares) == 1:  # Permite selecionar até 10 amostras quando uma culti
         st.markdown(f"<p style='color:{cor_pmi_medio};'>PMI Médio das Amostras: {pmi_medio:.2f}%</p>", unsafe_allow_html=True)
         st.write(recomendacao_medio)
 
-        # Gráfico de Comparação de PMI entre Amostras com fundo cinza
-        fig, ax = plt.subplots(facecolor='lightgray')
+        # Gráfico de Comparação de PMI entre Amostras com fundo cinza apenas na parte interna
+        fig, ax = plt.subplots()
+        ax.set_facecolor('lightgray')  # Fundo cinza apenas dentro do gráfico
         ax.bar(range(1, len(pmi_values) + 1), pmi_values, color=['green' if pmi >= 70 else 'red' for pmi in pmi_values])
-        ax.set_facecolor('lightgray')  # Fundo cinza dentro do gráfico
         ax.set_title('Comparação de PMI entre Amostras')
         ax.set_xlabel('Amostra')
         ax.set_ylabel('PMI (%)')
