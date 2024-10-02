@@ -113,7 +113,7 @@ st.sidebar.write("[Visite o site do RSRG](https://www.rsrg.net.br/)")
 # Seleção de cultivares
 cultivares = st.multiselect(
     "Selecione as cultivares para avaliação:",
-    ["Granoleico", "IAC 503", "IAC 677", "IAC OL3"]
+    ["Granoleico", "IAC 503", "IAC 677", "IAC OL3", "Outra Cultivar"]
 )
 
 # Observação em vermelho sobre a quantidade de vagens necessárias
