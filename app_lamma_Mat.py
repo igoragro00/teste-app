@@ -16,8 +16,8 @@ def calcular_pmi(white, yellow1, yellow2, orange, brown, black):
     else:
         return None
 
-# Função para gerar o PDF com as informações das amostras
-def gerar_pdf(dados, grafico_path, pmi_medio, pmi_medio_cor, cultivar_selecionada):
+# Função para gerar o PDF com as informações das amostras e a recomendação de colheita
+def gerar_pdf(dados, grafico_path, pmi_medio, pmi_medio_cor, cultivar_selecionada, recomendacao):
     pdf_buffer = BytesIO()
     c = canvas.Canvas(pdf_buffer, pagesize=A4)
 
@@ -45,6 +45,10 @@ def gerar_pdf(dados, grafico_path, pmi_medio, pmi_medio_cor, cultivar_selecionad
     c.setFont("Helvetica-Bold", 12)
     c.drawCentredString(A4[0] / 2, y, f'PMI Médio da Cultivar {cultivar_selecionada}: {pmi_medio:.2f}%')
     c.setFillColorRGB(0, 0, 0)  # Volta à cor preta para o restante do texto
+
+    # Exibir a recomendação de colheita para o PMI médio
+    y -= 20
+    c.drawString(50, y, recomendacao)
 
     # Ajustar a posição e tamanho do gráfico mais abaixo no PDF para evitar sobreposição
     c.drawImage(grafico_path, 50, 50, width=450, height=250)
@@ -178,10 +182,10 @@ if len(cultivares) == 1:  # Permite selecionar até 10 amostras quando uma culti
                 ax.set_ylabel('Quantidade de Vagens')
                 ax.set_title(f'Distribuição de Vagens por Cor - Amostra {i+1}')
 
-                # Adicionando rótulos às barras
+                # Adicionando rótulos às barras (mantendo os valores de % sem o símbolo)
                 for bar in bars:
                     yval = bar.get_height()
-                    ax.text(bar.get_x() + bar.get_width()/2, yval, int(yval), va='bottom')
+                    ax.text(bar.get_x() + bar.get_width()/2, yval, f'{yval:.2f}', va='bottom')
 
                 st.pyplot(fig)
             else:
@@ -191,10 +195,13 @@ if len(cultivares) == 1:  # Permite selecionar até 10 amostras quando uma culti
         pmi_medio = sum(pmi_values) / len(pmi_values)
         if pmi_medio >= 70:
             cor_pmi_medio = 'green'
-            st.markdown(f"<p style='color:green;'>PMI Médio das Amostras: {pmi_medio:.2f}%</p>", unsafe_allow_html=True)
+            recomendacao_medio = f"Recomendação para o PMI médio: Iniciar colheita mecanizada."
         else:
             cor_pmi_medio = 'red'
-            st.markdown(f"<p style='color:red;'>PMI Médio das Amostras: {pmi_medio:.2f}%</p>", unsafe_allow_html=True)
+            recomendacao_medio = f"Recomendação para o PMI médio: Ainda não é o momento ideal para a colheita."
+
+        st.markdown(f"<p style='color:{cor_pmi_medio};'>PMI Médio das Amostras: {pmi_medio:.2f}%</p>", unsafe_allow_html=True)
+        st.write(recomendacao_medio)
 
         # Gráfico de Comparação de PMI entre Amostras com fundo cinza
         fig, ax = plt.subplots(facecolor='lightgray')
@@ -204,9 +211,9 @@ if len(cultivares) == 1:  # Permite selecionar até 10 amostras quando uma culti
         ax.set_xlabel('Amostra')
         ax.set_ylabel('PMI (%)')
 
-        # Adicionando rótulos às barras
+        # Adicionando rótulos às barras (mantendo o valor do PMI sem o símbolo de %)
         for i, bar in enumerate(ax.patches):
-            ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height(), f'{i+1}', ha='center', va='bottom')
+            ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height(), f'{bar.get_height():.2f}', ha='center', va='bottom')
 
         # Adicionar legenda abaixo do gráfico
         green_patch = plt.Line2D([0], [0], color='green', lw=4, label='PMI >= 70% (Colheita Recomendável)')
@@ -220,7 +227,7 @@ if len(cultivares) == 1:  # Permite selecionar até 10 amostras quando uma culti
         fig.savefig(grafico_path)
 
         # Botão para gerar e baixar o PDF
-        pdf_output = gerar_pdf({f"Amostra {i+1}": amostra for i, amostra in enumerate(amostras_dados)}, grafico_path, pmi_medio, cor_pmi_medio, cultivar_selecionada)
+        pdf_output = gerar_pdf({f"Amostra {i+1}": amostra for i, amostra in enumerate(amostras_dados)}, grafico_path, pmi_medio, cor_pmi_medio, cultivar_selecionada, recomendacao_medio)
         st.download_button(label="Baixar Relatório PDF", 
                            data=pdf_output, 
                            file_name='relatorio_maturacao_amostras.pdf', 
@@ -229,6 +236,7 @@ if len(cultivares) == 1:  # Permite selecionar até 10 amostras quando uma culti
         # Remove o arquivo temporário após o download
         if os.path.exists(grafico_path):
             os.remove(grafico_path)
+
 
 
 #streamlit run "c:/Users/Igor Vieira/App_Lamma/app_lamma_Mat.py"
