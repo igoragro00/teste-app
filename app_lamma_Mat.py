@@ -29,7 +29,7 @@ def gerar_pdf(dados, grafico_path, pmi_medio, pmi_medio_cor, cultivar_selecionad
     c.setFont("Helvetica-Bold", 14)
     c.drawCentredString(A4[0] / 2, 780, f"Data da Exportação: {datetime.now().strftime('%Y-%m-%d')}")
 
-    c.setFont("Helvetica", 10)
+    c.setFont("Helvetica", 12)
     y = 740  # Ajustando o ponto inicial para texto das amostras
 
     # Adicionando as amostras em uma única coluna, incluindo o nome da cultivar
@@ -49,6 +49,8 @@ def gerar_pdf(dados, grafico_path, pmi_medio, pmi_medio_cor, cultivar_selecionad
     # Exibir a recomendação de colheita para o PMI médio
     y -= 20
     c.drawString(50, y, recomendacao)
+
+    y -= 40  # Diminuindo o espaçamento para evitar sobreposição com o gráfico
 
     # Ajustar a posição e tamanho do gráfico mais abaixo no PDF para evitar sobreposição
     c.drawImage(grafico_path, 50, 50, width=450, height=250)
@@ -117,7 +119,7 @@ st.sidebar.write("[Visite o site do RSRG](https://www.rsrg.net.br/)")
 # Seleção de cultivares
 cultivares = st.multiselect(
     "Selecione as cultivares para avaliação:",
-    ["Granoleico", "IAC 503", "IAC 677", "IAC OL3", "Outra Cultivar"]
+    ["Granoleico", "IAC 503", "IAC 677", "IAC OL3"]
 )
 
 # Observação em vermelho sobre a quantidade de vagens necessárias
@@ -182,10 +184,10 @@ if len(cultivares) == 1:  # Permite selecionar até 10 amostras quando uma culti
                 ax.set_ylabel('Quantidade de Vagens')
                 ax.set_title(f'Distribuição de Vagens por Cor - Amostra {i+1}')
 
-                # Adicionando rótulos às barras (mantendo os valores de % sem o símbolo)
+                # Centralizar e adicionar rótulos às barras (mantendo os valores de % sem o símbolo)
                 for bar in bars:
                     yval = bar.get_height()
-                    ax.text(bar.get_x() + bar.get_width()/2, yval, f'{yval:.2f}', va='bottom')
+                    ax.text(bar.get_x() + bar.get_width()/2, yval, f'{yval:.2f}', ha='center', va='bottom')
 
                 st.pyplot(fig)
             else:
@@ -211,7 +213,7 @@ if len(cultivares) == 1:  # Permite selecionar até 10 amostras quando uma culti
         ax.set_xlabel('Amostra')
         ax.set_ylabel('PMI (%)')
 
-        # Adicionando rótulos às barras (mantendo o valor do PMI sem o símbolo de %)
+        # Centralizar e adicionar rótulos às barras (mantendo o valor do PMI sem o símbolo de %)
         for i, bar in enumerate(ax.patches):
             ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height(), f'{bar.get_height():.2f}', ha='center', va='bottom')
 
@@ -236,7 +238,5 @@ if len(cultivares) == 1:  # Permite selecionar até 10 amostras quando uma culti
         # Remove o arquivo temporário após o download
         if os.path.exists(grafico_path):
             os.remove(grafico_path)
-
-
 
 #streamlit run "c:/Users/Igor Vieira/App_Lamma/app_lamma_Mat.py"
