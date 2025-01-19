@@ -70,7 +70,7 @@ def gerar_pdf(dados, grafico_path, pmi_medio, pmi_medio_cor, cultivar_selecionad
 st.title("Calculadora de Maturação do Amendoim")
 
 # Adiciona a logo do LAMMA no cabeçalho do app
-st.image("https://lamma.com.br/wp-content/uploads/2024/08/lammapy-removebg-preview.png", use_column_width=True)
+st.image("https://lamma.com.br/wp-content/uploads/2024/08/lammapy-removebg-preview.png", use_container_width=True)
 
 # Informações sobre o laboratório
 st.subheader("Calculadora desenvolvida pelo LAMMA - Laboratório de Máquinas e Mecanização Agrícola da UNESP/Jaboticabal")
